@@ -1,8 +1,17 @@
-export class ScoreEngine {
-    static calculate(results: any[]) {
-        return results.reduce(
-            (total, item) => total + item.score,
-            0
+import { ScanResult } from "../shared/types";
+
+export class ScoringEngine {
+    calculate(results: ScanResult[]) {
+        const totalChecks = results.length;
+
+        const passedChecks = results.filter(
+            item => item.status === "PASS"
+        ).length;
+
+        const score = Math.round(
+            (passedChecks / totalChecks) * 100
         );
+
+        return score;
     }
 }

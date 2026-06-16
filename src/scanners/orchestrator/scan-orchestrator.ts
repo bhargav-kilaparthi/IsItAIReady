@@ -3,21 +3,30 @@ import { SitemapScanner } from "../discovery/sitemap.scanner";
 import { LlmsScanner } from "../discovery/llms.scanner";
 
 export class ScanOrchestrator {
-    static async run(url: string) {
-        const results = [];
+    async run(
+        url: string,
+        checks: Record<string, boolean>
+    ) {
+        const scanners: Promise<any>[] = [];
 
-        results.push(
-            await RobotsScanner.scan(url)
-        );
+        if (checks.robots) {
+            scanners.push(
+                new RobotsScanner().scan(url)
+            );
+        }
 
-        results.push(
-            await SitemapScanner.scan(url)
-        );
+        if (checks.sitemap) {
+            scanners.push(
+                new SitemapScanner().scan(url)
+            );
+        }
 
-        results.push(
-            await LlmsScanner.scan(url)
-        );
+        if (checks.llms) {
+            scanners.push(
+                new LlmsScanner().scan(url)
+            );
+        }
 
-        return results;
+        return Promise.all(scanners);
     }
 }

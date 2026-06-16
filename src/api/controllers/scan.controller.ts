@@ -1,13 +1,27 @@
 import { Request, Response } from "express";
 import { ScanService } from "../../services/scan.service";
+import { validateUrl } from "../../shared/sanitizer";
+
+const scanService = new ScanService();
 
 export const scanWebsite = async (
     req: Request,
     res: Response
 ) => {
-    const { url } = req.body;
+    try {
+        const { url, checks } = req.body;
 
-    const result = await ScanService.scan(url);
+        const validatedUrl = validateUrl(url);
 
-    res.json(result);
+        const result = await scanService.scan(
+            validatedUrl, checks
+        );
+
+        return res.status(200).json(result);
+    } catch (error: any) {
+        return res.status(400).json({
+            success: false,
+            message: error.message,
+        });
+    }
 };

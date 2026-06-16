@@ -1,10 +1,10 @@
 import { Router } from "express";
+
 const router = Router();
 
-router.get("/health", (req, res) => {
-    res.status(200).json({
-        success: true,
-        message: "API is running",
+router.get("/health", (_, res) => {
+    res.json({
+        status: "ok",
     });
 });
 
